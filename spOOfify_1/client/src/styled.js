@@ -1,29 +1,20 @@
 import styled from "styled-components";
 
-export const Polaroid = styled.div`
+export const AlbumCoversWrapper = styled.div`
+  align-content: flex-start;
   box-sizing: border-box;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  margin: 0;
-  padding: 0;
-  width: 50%;
-
-  & > img {
-    display: block;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-  }
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  height: 100%;
+  overflow: hidden auto;
+  width: 100%;
 `;
 
-// div.polaroid {
-//     width: 80%;
-//     background-color: white;
-//     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-//   }
+const RootWrapper = styled.div`
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+`;
 
-//   img {width: 100%}
-
-//   div.container {
-//     text-align: center;
-//     padding: 10px 20px;
-//   }
+export default RootWrapper;

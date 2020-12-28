@@ -1,24 +1,33 @@
+require("dotenv").config();
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const express = require("express");
-const fs = require("fs");
-const path = require("path");
+const mongoose = require("mongoose");
+
+const { errorHandler } = require("./controllers/errorHandler");
+const albumRoutes = require("./routes/albumRoutes");
 
 const app = express();
-const directoryPath = path.join(__dirname, "images");
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get("/", (req, res, next) => {
-  fs.readdir(directoryPath, (err, files) => {
-    if (err) {
-      return res.status(500).json({ message: "Something went wrong." });
-    }
-    res
-      .status(200)
-      .json({ files, message: "Album cover names fetched fetched." });
-  });
-});
+app.use("/albums", albumRoutes);
+app.use(errorHandler);
 
-app.listen(8080, () => console.log(`Server is listening on port 5050...`));
+mongoose
+  .connect(
+    `mongodb+srv://${process.env.DB_NAME}:${process.env.DB_PASSWORD}@${process.env.DB_CLUSTER}.mongodb.net/${process.env.DB_COLLECTION}?retryWrites=true&w=majority`,
+    { useNewUrlParser: true, useUnifiedTopology: true }
+  )
+  .then(() => {
+    console.log(
+      `Database connection to collection "${process.env.DB_COLLECTION}" established successfully...`
+    );
+    console.log(`Setting up the server on port ${process.env.SERVER_PORT}...`);
+    app.listen(process.env.SERVER_PORT, () =>
+      console.log(`Server is listening on port ${process.env.SERVER_PORT}...`)
+    );
+  })
+  .catch((err) => console.log(err));

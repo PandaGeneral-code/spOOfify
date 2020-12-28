@@ -1,29 +1,35 @@
-import React from "react";
-
-import testImage from "images/cardi-b-invasion-of-privacy-album-art-2018-billboard-embed-compressed.jpg";
-import { Polaroid as TestPolaroid } from "./styled";
-import { useUtilsHooks } from "./utils/hooks/UtilsHooks";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 import Polaroid from "./components/Polaroid/Polaroid";
+import RootWrapper, { AlbumCoversWrapper } from "./styled";
 
 const App = () => {
-  const {
-    utilsState: { test },
-  } = useUtilsHooks();
+  const [albumCoverFileNames, setAlbumCoverFileNames] = useState([]);
+
+  const fetchAlbumCoverFileNames = async () => {
+    try {
+      const {
+        data: { files },
+      } = await axios.get("http://localhost:8080/");
+      setAlbumCoverFileNames(() => files);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchAlbumCoverFileNames();
+  }, []);
 
   return (
-    <>
-      <div>App</div>
-      <pre>{JSON.stringify({ test, testImage }, null, 2)}</pre>
-      <TestPolaroid>
-        <img src={testImage} />
-      </TestPolaroid>
-      <Polaroid
-        image={testImage}
-        subTitle="Invasion of Privacy"
-        title="Cardi B"
-      />
-    </>
+    <RootWrapper>
+      <AlbumCoversWrapper>
+        {albumCoverFileNames.map((fileName) => (
+          <Polaroid image={fileName} key={fileName} />
+        ))}
+      </AlbumCoversWrapper>
+    </RootWrapper>
   );
 };
 
